@@ -1,0 +1,22 @@
+name: malbec_socrates
+channels:
+- conda-forge
+dependencies:
+- aeolus>=0.4.15
+- dask
+- ipykernel
+- ipython
+- iris>=3.2
+- matplotlib
+- metpy
+- mo_pack
+- netCDF4
+- numpy
+- pandas
+- python>=3.10
+- pip
+- pytest
+- tqdm
+- xarray
+- pip:
+  - git+https://github.com/metomi/mule.git#egg=mule&subdirectory=mule
