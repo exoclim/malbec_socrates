@@ -107,7 +107,7 @@ def main(args=None):
         from psg_util import read_psg_lyr_atm_prof
 
         df = read_psg_lyr_atm_prof(mypaths.psg_data_dir / args.case / "psg_lyr.txt")
-        theta_lev_km = df["Alt[km]"].values
+        theta_lev_km = df.index.values
         z_top = theta_lev_km[-1] * 1e3
         theta_lev = theta_lev_km / theta_lev_km[-1]
         rho_lev = 0.5 * (theta_lev[:-1] + theta_lev[1:])
