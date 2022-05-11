@@ -8,9 +8,12 @@ import f90nml
 import iris
 import iris.pandas
 import iris.util
+import mule
 import pandas as pd
 from aeolus.const import init_const
 from aeolus.meta import update_metadata
+
+from dump_modifiers import set_fields_to_real
 
 __all__ = (
     "PSGContainer",
@@ -246,3 +249,17 @@ class PSGContainer(object):
             }
         )
         nml.write(_outdir / f"vertlevs_{self.sim_case}", force=True, sort=True)
+
+    def replace_profile_in_dump(
+        self, path_to_dump, stash_item, psg_variable, inplace=True
+    ):
+        """Set a field in the dump to a horizontally uniform value."""
+        ff_dump = mule.DumpFile.from_file(str(path_to_dump))
+        set_fields_to_real(ff_dump, getattr(self, psg_variable), stash_item)
+        new_name = f"{path_to_dump.name}_mod_{stash_item:>03d}_{psg_variable}"
+        new_name_full = path_to_dump.with_name(new_name)
+        ff_dump.to_file(str(new_name_full))
+        if inplace:
+            new_name_full.replace(path_to_dump)
+        else:
+            return new_name_full
