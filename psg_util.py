@@ -119,6 +119,10 @@ def read_psg_lyr_atm_prof(filepath):
         comment="#",
         index_col="Alt[km]",
     )
+    # If the data contains cloud MMR columns, rename them accordingly
+    psg_lyr_df = psg_lyr_df.rename(
+        {"Cloud": "liquid_water [kg kg-1]", "size[m]": "ice [kg kg-1]"}, axis=1
+    )
     return psg_lyr_df
 
 
@@ -146,6 +150,8 @@ class PSGContainer(object):
         self._temperature = None
         self._pressure = None
         self._humidity_mixing_ratio = None
+        self._cloud_liquid_water_mixing_ratio = None
+        self._cloud_ice_mixing_ratio = None
         self._exner = None
         self._potential_temperature = None
 
@@ -154,7 +160,7 @@ class PSGContainer(object):
     def _load_lyr(self):
         """Load PSG data from the `lyr` file."""
         self.lyr_data = read_psg_lyr_atm_prof(
-            self.psg_data_dir / self.sim_case / "psg_lyr.txt"
+            self.psg_data_dir / self.sim_case / "PSG" / "psg_lyr.txt"
         )
 
     @property
@@ -196,6 +202,30 @@ class PSGContainer(object):
                 z_name=self.z_name,
             )
         return self._humidity_mixing_ratio
+
+    @property
+    def cloud_liquid_water_mixing_ratio(self):
+        if self._cloud_liquid_water_mixing_ratio is None:
+            self._cloud_liquid_water_mixing_ratio = psg_series_to_cube(
+                self.lyr_data,
+                "liquid_water [kg kg-1]",
+                "cloud_liquid_water_mixing_ratio",
+                "kg kg-1",
+                z_name=self.z_name,
+            )
+        return self._cloud_liquid_water_mixing_ratio
+
+    @property
+    def cloud_ice_mixing_ratio(self):
+        if self._cloud_ice_mixing_ratio is None:
+            self._cloud_ice_mixing_ratio = psg_series_to_cube(
+                self.lyr_data,
+                "ice [kg kg-1]",
+                "cloud_ice_mixing_ratio",
+                "kg kg-1",
+                z_name=self.z_name,
+            )
+        return self._cloud_ice_mixing_ratio
 
     @property
     @update_metadata(name="dimensionless_exner_function", units="1")
