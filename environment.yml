@@ -2,13 +2,13 @@ name: malbec_socrates
 channels:
 - conda-forge
 dependencies:
-- aeolus>=0.4.15
+- aeolus>=0.4.16
 - black
 - dask
 - flake8
 - ipykernel
 - ipython
-- iris>=3.2
+- iris>=3.4
 - isort
 - matplotlib
 - metpy
@@ -17,7 +17,7 @@ dependencies:
 - numpy
 - pandas
 - pre-commit
-- python>=3.10
+- python>=3.11
 - pip
 - pytest
 - tqdm
