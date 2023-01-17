@@ -46,7 +46,7 @@
     {
         "name": "dry_air_molecular_weight",
         "units": "kg mol-1",
-        "value": 2.3563426344604395
+        "value": 0.0023563426344604395
     },
     {
         "name": "condensible_density",
