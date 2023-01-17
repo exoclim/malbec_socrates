@@ -5,7 +5,7 @@ from typing import Optional
 
 import f90nml
 import iris
-import iris.cube.Cube
+import iris.cube
 import iris.pandas
 import iris.util
 import mule
@@ -30,13 +30,14 @@ def malbec_series_to_cube(
         "P": "bar",
         "T": "K",
         "MMW": "g/mol",
+        "Alt": "km",
     }
     cube = iris.pandas.as_cube(df[column_name])
     cube.rename(cube_name)
     cube.units = units.get(column_name, "mol/mol")
     cube.convert_units(si_units)
     cube.coord("index").rename(z_name)
-    cube.coord(z_name).units = "km"
+    cube.coord(z_name).units = units["Alt"]
     cube.coord(z_name).convert_units("m")
     return cube
 
@@ -95,7 +96,7 @@ class MalbecContainer(object):
 
         # Set planetary and atmospheric constants
         self.const = init_const(self.sim_case, directory=const_dir)
-        self.const.kappa = (
+        self.kappa = (
             self.const.dry_air_gas_constant / self.const.dry_air_spec_heat_press
         )
 
@@ -162,7 +163,7 @@ class MalbecContainer(object):
         if self._exner is None:
             self._exner = (
                 self.pressure / self.const.reference_surface_pressure
-            ) ** float(self.const.kappa.data)
+            ) ** float(self.kappa.data)
         return self._exner
 
     @property

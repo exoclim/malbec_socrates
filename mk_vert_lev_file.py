@@ -51,7 +51,7 @@ def parse_args(args=None):
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         epilog=f"""Usage:
 ./{SCRIPT} -o vertlevs_L42_85km -t uniform -n 42 -r 1 -z 85000
-./{SCRIPT} -o vertlevs_L58_99km -t psg_lyr -c T1A -r 1
+./{SCRIPT} -o vertlevs_L58_99km -t malbec -c T1A -r 1
 """,
     )
 
@@ -61,12 +61,10 @@ def parse_args(args=None):
         "--type",
         type=str,
         help="Type of vertical levels",
-        choices=["uniform", "psg_lyr"],
+        choices=["uniform", "malbec"],
         required=True,
     )
-    ap.add_argument(
-        "-c", "--case", type=str, help="MALBEC case", choices=["T1A"], required=True
-    )
+    ap.add_argument("-c", "--case", type=str, help="MALBEC case", required=True)
     ap.add_argument(
         "-n",
         "--nlevs",
@@ -102,11 +100,13 @@ def main(args=None):
         z_top = args.z_top_of_model
         theta_lev = np.linspace(0, 1, nlevs)
         rho_lev = 0.5 * (theta_lev[:-1] + theta_lev[1:])
-    elif lev_type == "psg_lyr":
+    elif lev_type == "malbec":
         import mypaths
-        from psg_util import read_psg_lyr_atm_prof
+        from malbec_util import read_malbec_profiles
 
-        df = read_psg_lyr_atm_prof(mypaths.psg_data_dir / args.case / "psg_lyr.txt")
+        df = read_malbec_profiles(
+            mypaths.data_dir / args.case / f"{args.case}_malbec.txt"
+        )
         theta_lev_km = df.index.values
         z_top = theta_lev_km[-1] * 1e3
         theta_lev = theta_lev_km / theta_lev_km[-1]
