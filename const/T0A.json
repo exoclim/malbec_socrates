@@ -1,0 +1,66 @@
+[
+    {
+        "name": "gravity",
+        "units": "m s-2",
+        "value": 7.564
+    },
+    {
+        "name": "radius",
+        "units": "m",
+        "value": 18159000
+    },
+    {
+        "name": "day",
+        "units": "s",
+        "value": 136590.98493868666
+    },
+    {
+        "name": "solar_constant",
+        "units": "W m-2",
+        "value": 24109.44481511925
+    },
+    {
+        "name": "reference_surface_pressure",
+        "units": "Pa",
+        "value": 100000.0
+    },
+    {
+        "name": "semi_major_axis",
+        "units": "au",
+        "value": 1.411e-2
+    },
+    {
+        "name": "eccentricity",
+        "value": 0.0
+    },
+    {
+        "name": "obliquity",
+        "units": "degree",
+        "value": 0.0
+    },
+    {
+        "name": "dry_air_spec_heat_press",
+        "units": "m2 s-2 K-1",
+        "value": 11619.96537421098
+    },
+    {
+        "name": "dry_air_molecular_weight",
+        "units": "kg mol-1",
+        "value": 0.0023563426344604395
+    },
+    {
+        "name": "condensible_density",
+        "units": "kg m-3",
+        "value": 1000.0
+    },
+    {
+        "name": "condensible_heat_vaporization",
+        "units": "m2 s-2",
+        "value": 2.501e6
+    },
+    {
+        "name": "stellar_radius",
+        "units": "m",
+        "value": 153054000
+    }
+]

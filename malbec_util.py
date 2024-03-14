@@ -82,7 +82,9 @@ class MalbecContainer(object):
 
     z_name = "level_height"
 
-    def __init__(self, sim_case: str, const_dir: Path, data_dir: Path) -> None:
+    def __init__(
+        self, sim_case: str, const_dir: Path, data_dir: Path, nlev: Optional[int] = None
+    ) -> None:
         """
         Initialise the container for MALBEC atmospheric profiles.
 
@@ -93,6 +95,7 @@ class MalbecContainer(object):
         """
         self.sim_case = sim_case
         self.data_dir = data_dir
+        self.nlev = nlev
 
         # Set planetary and atmospheric constants
         self.const = init_const(self.sim_case, directory=const_dir)
@@ -112,8 +115,12 @@ class MalbecContainer(object):
 
     def _load_data(self):
         """Load data from the malbec.txt file."""
+        if self.nlev:
+            file_name = f"{self.sim_case}_malbec_{self.nlev}.txt"
+        else:
+            file_name = f"{self.sim_case}_malbec.txt"
         self.malbec_data = read_malbec_profiles(
-            self.data_dir / self.sim_case / f"{self.sim_case}_malbec.txt"
+            self.data_dir / self.sim_case / file_name
         )
 
     @property
@@ -185,10 +192,11 @@ class MalbecContainer(object):
             cube_out.rename(new_name)
             cube_out.coord(self.z_name).rename("altitude")
             cubelist_out.append(cube_out)
-        iris.save(
-            cubelist_out,
-            _outdir / f"{self.sim_case}_p_t_profile.nc",
-        )
+        if self.nlev:
+            file_name = f"{self.sim_case}_{self.nlev-1}_p_t_profile.nc"
+        else:
+            file_name = f"{self.sim_case}_p_t_profile.nc"
+        iris.save(cubelist_out, _outdir / file_name)
 
     def mk_vert_lev_file(
         self,
@@ -212,7 +220,11 @@ class MalbecContainer(object):
                 }
             }
         )
-        nml.write(_outdir / f"vertlevs_{self.sim_case}", force=True, sort=True)
+        if self.nlev:
+            file_name = f"vertlevs_{self.sim_case}_{self.nlev-1}"
+        else:
+            file_name = f"vertlevs_{self.sim_case}"
+        nml.write(_outdir / file_name, force=True, sort=True)
 
     def replace_profile_in_dump(
         self,
